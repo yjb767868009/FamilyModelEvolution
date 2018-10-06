@@ -1,0 +1,10 @@
+layer {{
+  type:InnerProduct
+  name:{name}
+  bottom:{bottom}
+  top:{top}
+  num_output:{num_output}
+  concatenate:{concatenate}
+}}
+
+

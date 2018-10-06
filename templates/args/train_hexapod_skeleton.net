@@ -1,0 +1,7 @@
+{{
+	"output_path":	"output/train_hexapod.h5",	
+	"actor":	"{actor}",
+	"actor_solver":	"{actor_solver}",
+	"critic":	"character/ant/neural/ant.critic.prototxt",
+	"critic_solver":"character/ant/neural/ant.critic.solver.prototxt"
+}}

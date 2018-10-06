@@ -1,0 +1,10 @@
+layer {{
+  type:Activation
+  name:{name}
+  bottom:{bottom}
+  top:{top}
+  active_type:{active_type}
+  concatenate:{concatenate}
+}}
+
+

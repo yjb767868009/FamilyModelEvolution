@@ -1,0 +1,8 @@
+layer {{
+  type:Concatenate
+  name:{name}
+  bottom:{bottom}
+  top:{top}
+  concatenate:{concatenate}
+}}
+

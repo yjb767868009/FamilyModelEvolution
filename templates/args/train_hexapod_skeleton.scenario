@@ -1,0 +1,15 @@
+// mode can be "kinematic" or "dynamic", to explicitly specify the character mode
+// when the mode is kinematic, the field "motion" is essential
+// simulation starts kinematically, loading the motion file
+// if motion only contains one frame, it denotes the posture 
+// when the mode is dynamic, the field "motion" is still essential to specify the initial animation/posture to start the dynamic simulation. But other fields "actuator/control/neural" are still needed to initialize a dynamic controller
+// when initializing the character, the program attempts to initialize both the kinematic and dynamic controllers
+// however if the mode is kinematic, the character will stay kinematic even though a dynamic controller exists. when manually switching to dynamic, it completes the switch if the dynamic controller exists, otherwise trigger an error.
+// if the mode is dynamic, the character will complete the kinematic motion (or posture) first, but will automatically swtich to dynamic. this is useful for optimization
+{
+	"mode":		"dynamic",
+	"skeleton":	"character/ant/skel/ant.skel",
+	"actuator":	"character/ant/actuator/ant_pd.actuator",
+	"control":	"character/ant/controller/ant.ctrl",
+	"motion":	"character/ant/motion/initial_posture.motion"
+}

@@ -1,0 +1,14 @@
+layer {{
+  type:Convolution
+  name:{name}
+  bottom:{bottom}
+  top:{top}
+  num_output:{num_output}
+  kernel_w:{kernel_w}
+  stride:{stride}
+  padding:{padding}
+  use_bias:{use_bias}
+  concatenate:{concatenate}
+}}
+
+

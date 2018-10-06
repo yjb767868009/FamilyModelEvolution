@@ -1,0 +1,116 @@
+layer {
+  type:Convolution
+  name:0_0_convolution_1
+  bottom:data
+  top:0_0_convolution_1
+  num_output:16
+  kernel_w:8
+  stride:2
+  padding:valid
+  use_bias:True
+  concatenate:None
+}
+
+
+layer {
+  type:Pooling
+  name:0_0_pool_2
+  bottom:0_0_convolution_1
+  top:0_0_pool_12
+  kernel_size:8
+  stride:1
+  pool_type:max
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_0_activation_3
+  bottom:0_0_pool_2
+  top:0_0_activation_3
+  active_type:relu
+  concatenate:None
+}
+
+
+layer {
+  type:Convolution
+  name:0_0_convolution_4
+  bottom:0_0_activation_3
+  top:0_0_convolution_4
+  num_output:32
+  kernel_w:14
+  stride:2
+  padding:valid
+  use_bias:True
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_0_activation_5
+  bottom:0_0_convolution_4
+  top:0_0_activation_5
+  active_type:relu
+  concatenate:None
+}
+
+
+layer {
+  type:Convolution
+  name:0_0_convolution_6
+  bottom:0_0_activation_5
+  top:0_0_convolution_6
+  num_output:32
+  kernel_w:4
+  stride:2
+  padding:valid
+  use_bias:True
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_0_activation_7
+  bottom:0_0_convolution_6
+  top:0_0_activation_7
+  active_type:relu
+  concatenate:None
+}
+
+
+layer {
+  type:Pooling
+  name:0_0_pool_8
+  bottom:0_0_activation_7
+  top:0_0_pool_8
+  kernel_size:12
+  stride:1
+  pool_type:max
+  concatenate:None
+}
+
+
+layer {
+  type:InnerProduct
+  name:0_0_innerproduct_9
+  bottom:0_0_pool_8
+  top:0_0_innerproduct_9
+  num_output:64
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_0_activation_10
+  bottom:0_0_innerproduct_9
+  top:0_0_activation_10
+  active_type:relu
+  concatenate:None
+}
+
+

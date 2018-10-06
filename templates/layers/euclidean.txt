@@ -1,0 +1,7 @@
+layer {
+  type:EuclideanLoss
+  name:loss
+  bottom:output
+  bottom:label
+  top:loss
+}

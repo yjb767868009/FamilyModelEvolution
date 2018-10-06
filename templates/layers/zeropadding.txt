@@ -1,0 +1,9 @@
+layer {{
+  type:ZeroPadding
+  name:{name}
+  bottom:{bottom}
+  top:{top}
+  padding:{padding}
+  concatenate:{concatenate}
+}}
+

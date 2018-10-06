@@ -1,0 +1,12 @@
+layer {{
+  type:Pooling
+  name:{name}
+  bottom:{bottom}
+  top:{top}
+  kernel_size:{kernel_size}
+  stride:{strides}
+  pool_type:{pool_type}
+  concatenate:{concatenate}
+}}
+
+

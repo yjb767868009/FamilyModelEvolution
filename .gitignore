@@ -1,0 +1,4 @@
+population
+*.zip
+.idea/
+__pycache__/

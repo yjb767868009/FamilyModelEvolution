@@ -1,0 +1,9 @@
+layer {{
+  type:BatchNormalization
+  name:{name}
+  bottom:{bottom}
+  top:{top}
+  concatenate:{concatenate}
+}}
+
+
