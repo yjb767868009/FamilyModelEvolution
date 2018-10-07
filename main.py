@@ -4,7 +4,7 @@ import os
 
 parser = argparse.ArgumentParser(description='Hyperparameters')
 parser.add_argument('-pz', '--population_size', default=10, type=int, help='population size')
-parser.add_argument('-mg', '--max_gen', default=10, type=int, help='max gen')
+parser.add_argument('-mg', '--max_gen', default=30, type=int, help='max gen')
 parser.add_argument('-f', '--first_run', default=0, type=int, help='if you run new genetic')
 
 
@@ -18,6 +18,7 @@ def main():
         if not neuro_evo.run_family():
             break
         neuro_evo.create_new_family()
+
 
 
 if __name__ == '__main__':

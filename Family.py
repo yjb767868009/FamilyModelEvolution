@@ -12,16 +12,18 @@ class family(object):
     child_num = 0
     list_child = []
     list_good_childs = []
+    list_bad_childs = []
 
-    def __init__(self, family_num_in, father, mother, R=1):
+    def __init__(self, family_num_in, father, mother, rank=1, lifetime=10):
         self.father = father
         self.mother = mother
-        self.R = R
+        self.rank = rank
         self.Q = max(father.q_value, mother.q_value)
         self.family_num = family_num_in
+        self.lifetime = lifetime
 
     def life_time(self, cn):
-        return 20 - cn
+        return self.lifetime - cn
 
     def check_family_lifetime(self):
         if self.life_time(self.child_num) >= 1:
@@ -62,6 +64,7 @@ class family(object):
 
     def create_new_childs(self):
         self.list_good_childs.clear()
+        self.list_bad_childs.clear()
         while (self.check_family_lifetime()):
             self.child_num += 1
             new_child = self.cross_to_new_net_point()
@@ -76,6 +79,10 @@ class family(object):
                 if new_child.q_value > self.Q:
                     print('net ' + new_child.get_fnum_gen() + ' better than ' + str(self.Q))
                     self.list_good_childs.append(new_child)
+                else:
+                    if self.rank > 1:
+                        print('net ' + new_child.get_fnum_gen() + ' worse than ' + str(self.Q))
+                        self.list_bad_childs.append(new_child)
             else:
                 self.child_num -= 1
-        return self.list_good_childs
+        return self.list_good_childs, self.list_bad_childs

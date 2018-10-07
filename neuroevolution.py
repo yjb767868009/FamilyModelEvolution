@@ -35,9 +35,11 @@ from random import randint, sample, uniform, random
 
 class NeuroEvolution(object):
     queue_new_child = Queue()
+    queue_bad_child = Queue()
     queue_family = Queue()
     list_q = []
     family_num = 0
+    now_rank = 0
 
     def __init__(self, population_size=10, max_gen=10):
         self.train_model_num = 0
@@ -47,7 +49,7 @@ class NeuroEvolution(object):
     def create_base_family(self, father=None, mother=None):
         seed_father = self.create_seed_net(0, load_network=father)
         seed_mother = self.create_seed_net(1, load_network=mother)
-        seed_family = family(self.family_num, seed_father, seed_mother, R=1)
+        seed_family = family(self.family_num, seed_father, seed_mother, rank=1)
         seed_family.child_num = 1
         self.queue_family.put(seed_family)
 
@@ -60,27 +62,37 @@ class NeuroEvolution(object):
     def output(self, message):
         print(message)
 
+    def output_family_info(self, family):
+        print('--------------------Family' + str(family.family_num) + '--------------------')
+        family_h = 'Family ' + str(family.family_num)
+        family_f = family_h + ' father : net ' + family.father.get_fnum_gen()
+        family_m = family_h + ' mother : net ' + family.mother.get_fnum_gen()
+        family_q = family_h + ' Q : ' + str(family.Q)
+        family_r = family_h + ' Rank : ' + str(family.rank)
+        self.output(family_f)
+        self.output(family_m)
+        self.output(family_q)
+        self.output(family_r)
+
     def run_family(self):
         if self.queue_family.empty():
             print('have no family!!!!')
             return False
         now_family = self.queue_family.get()
-        print('--------------------Family' + str(now_family.family_num) + '--------------------')
-        family_h = 'Family ' + str(now_family.family_num)
-        family_f = family_h + ' father : net ' + now_family.father.get_fnum_gen()
-        family_m = family_h + ' mother : net ' + now_family.mother.get_fnum_gen()
-        family_q = family_h + ' Q : ' + str(now_family.Q)
-        family_r = family_h + ' R : ' + str(now_family.R)
-        self.output(family_f)
-        self.output(family_m)
-        self.output(family_q)
-        self.output(family_r)
-        list_new_childs = now_family.create_new_childs()
+        self.output_family_info(now_family)
+        list_good_childs, list_bad_childs = now_family.create_new_childs()
+        self.now_rank = now_family.rank
         self.output('list of good childs:')
-        for child in list_new_childs:
+        for child in list_good_childs:
             child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
             self.output(child_gen_q)
             self.queue_new_child.put(child)
+        if self.now_rank >= 1:
+            self.output('list of bad childs:')
+            for child in list_bad_childs:
+                child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
+                self.output(child_gen_q)
+                self.queue_bad_child.put(child)
         return True
 
     def create_new_family(self):
@@ -90,8 +102,15 @@ class NeuroEvolution(object):
             father = self.queue_new_child.get()
             mother = self.queue_new_child.get()
             self.family_num += 1
-            new_family = family(self.family_num, father, mother)
+            new_family = family(self.family_num, father, mother, rank=self.now_rank + 1)
             self.queue_family.put(new_family)
+        if self.now_rank > 1:
+            while (self.queue_bad_child.qsize() >= 2):
+                father = self.queue_bad_child.get()
+                mother = self.queue_bad_child.get()
+                self.family_num += 1
+                new_family = family(self.family_num, father, mother, rank=self.now_rank - 1)
+                self.queue_family.put(new_family)
 
     def check_termination(self):
         if self.family_num < self.max_gen:
