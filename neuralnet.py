@@ -17,7 +17,7 @@ Methods:
 
 import numpy as np
 from os.path import join
-from fitness import Fitness
+from Fcifar100 import Fitness
 from random import randint
 from Layers import *
 
@@ -32,6 +32,7 @@ class NeuralNet(object):
         import os
 
         self.list_layers = []
+        self.layer_probablity_warp = []
         self.father = None
         self.q_value = None
         self.layer_num = 0
@@ -40,7 +41,7 @@ class NeuralNet(object):
         self.ind_gen = ind_gen_in
         if load_network != None:
             self.load_network(load_network, create_seed=create_seed)
-        elif ind_gen_in == 0 and family_num_in==0 or is_seed:
+        elif ind_gen_in == 0 or is_seed:
             self.create_seed_net(net_name)
             self.father = 'base'
         else:
@@ -56,6 +57,11 @@ class NeuralNet(object):
 
     def get_network_depth(self):
         return len(self.list_layers)
+
+    def get_warp_probability(self):
+        if len(self.layer_probablity_warp) == 0:
+            raise "Layer probablity matrix after warping is not initialized"
+        return self.layer_probablity_warp
 
     def get_fnum_gen(self):
         return str(self.family_num) + '_' + str(self.ind_gen)
@@ -81,7 +87,7 @@ class NeuralNet(object):
     def create_seed_net(self, net_name=None):
         if net_name == None:
             self.list_layers = []
-            self.append_layer(ConvLayer(16, 8, 2))
+            self.append_layer(ConvLayer(32, 4, 1))
             self.append_layer(ActivationLayer('relu'))
             self.append_layer(ConvLayer(32, 4, 2))
             self.append_layer(ActivationLayer('relu'))
@@ -111,7 +117,7 @@ class NeuralNet(object):
 
     def append_layer(self, layer_in):
         self.layer_num = self.layer_num + 1
-        layer_in.set_name('0_0', self.layer_num)
+        layer_in.set_name(self.get_fnum_gen(), self.layer_num)
         self.list_layers.append(layer_in)
 
     def dense_block(self, blocks):
@@ -133,20 +139,30 @@ class NeuralNet(object):
     def create_empty_net(self):
         pass
 
+    def select_layer_via_warp_index(self, warp_index):
+        if len(self.layer_probablity_warp) == 0:
+            raise "Layer probablity matrix after warping is not initialized"
+        rel_pose = warp_index / self.layer_probablity_warp.shape[1] * len(self.list_layers)
+        pose = int(round(rel_pose))
+        if pose > (len(self.list_layers) - 1):
+            pose = len(self.list_layers) - 1
+        return self.list_layers[pose]
+
     def insert_layer(self, layer, layer_index):
         if (layer_index >= len(self.list_layers)):
             raise "the inserted position is beyond the current depth of the network"
         self.list_layers.insert(layer_index, layer)
 
     def delete_layer(self, layer_index):
-        print('delete layer:')
-        self.list_layers[layer_index].print_attr()
+        if not test:
+            print('delete layer:')
+            self.list_layers[layer_index].print_attr()
         del self.list_layers[layer_index]
 
     def adjust_layer_list_random(self):
         diff_num_layers = 0
         while diff_num_layers == 0:
-            diff_num_layers = randint(-int(len(self.list_layers)/5), int(len(self.list_layers)/2))
+            diff_num_layers = randint(-int(len(self.list_layers) / 5), int(len(self.list_layers)))
         if (diff_num_layers > 0):
             while (diff_num_layers != 0):
                 self.insert_layer_random_position()
@@ -162,8 +178,9 @@ class NeuralNet(object):
         self.layer_num = self.layer_num + 1
         layer.set_name(self.get_fnum_gen(), self.layer_num)
         self.insert_layer(layer, layer_index)
-        print('insert layer')
-        layer.print_attr()
+        if not test:
+            print('insert layer')
+            layer.print_attr()
 
     def generate_random_layer(self):
         layer_type = randint(0, len(self.dynamic_layers) - 1)
@@ -181,10 +198,11 @@ class NeuralNet(object):
             layer = self.list_layers[layer_index]
             if type(layer) in self.dynamic_layers:
                 break
-        layer.adjust_attr_random(intra=True)
+        layer.adjust_attr_random(intra=not test)
         self.layer_num = self.layer_num + 1
         layer.set_name(self.get_fnum_gen(), self.layer_num)
-        layer.print_attr()
+        if not test:
+            layer.print_attr()
 
     def kick_simulation(self):
         import gc
@@ -202,11 +220,33 @@ class NeuralNet(object):
             print("net " + self.get_fnum_gen() + " : " + str(self.q_value))
             if self.q_value != 0:
                 f = open('log.txt', 'a')
-                f.write(datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z')+'    ')
+                f.write(datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z') + '    ')
                 f.write(str(self.q_value) + '\n')
                 f.close()
                 trained = True
         return self.q_value, trained
+
+    def warp_layer_probablity(self, warp_length):
+        x = np.linspace(0, len(self.list_layers) - 1, warp_length)
+        xp = np.linspace(0, len(self.list_layers) - 1, len(self.list_layers))
+        yp_mat = self.construct_layer_probability_matrix()
+        yp_mat_interp = self.interpolate_layer_probability_matrix(x, xp, yp_mat)
+        self.layer_probablity_warp = yp_mat_interp
+        return yp_mat_interp
+
+    def construct_layer_probability_matrix(self):
+        prob_list = []
+        for layer in self.list_layers:
+            prob_list.append(layer.layer_probablity)
+        prob_mat = np.array(prob_list)
+        self.layer_probablity = np.transpose(prob_mat)
+        return self.layer_probablity
+
+    def interpolate_layer_probability_matrix(self, x, xp, yp):
+        from scipy.interpolate import interp1d
+        f = interp1d(xp, yp)
+        interp_mat = f(x)
+        return interp_mat
 
     def output_deploy_network(self):
         import os

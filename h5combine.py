@@ -5,11 +5,10 @@ class combine(object):
     list_net_a_layer = []
     list_net_b_layer = []
 
-    def __init__(self, net_a, net_b, new_net, cross_point):
+    def __init__(self, net_a, net_b, new_net):
         self.net_a = net_a
         self.net_b = net_b
         self.new_net = new_net
-        self.cross_point = cross_point
 
     def append_in_net_a(self, name):
         self.list_net_a_layer.append(name)
@@ -29,7 +28,7 @@ class combine(object):
         net_b_file = h5py.File(net_b_path, 'r')
         net_a_file.visit(self.append_in_net_a)
         net_b_file.visit(self.append_in_net_b)
-        list_add_layers_name=[]
+        list_add_layers_name = []
         for layer in self.new_net.list_layers:
             if layer.name not in list_add_layers_name:
                 if layer in self.net_a.list_layers:

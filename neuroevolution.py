@@ -39,6 +39,7 @@ class NeuroEvolution(object):
     queue_family = Queue()
     list_q = []
     family_num = 0
+    now_family_num = 0
     now_rank = 0
 
     def __init__(self, population_size=10, max_gen=10):
@@ -75,12 +76,15 @@ class NeuroEvolution(object):
         self.output(family_r)
 
     def run_family(self):
+        print('the num of good child list: ' + str(self.queue_new_child.qsize()))
+        print('the num of family: ' + str(self.queue_family.qsize()))
         if self.queue_family.empty():
             print('have no family!!!!')
             return False
         now_family = self.queue_family.get()
         self.output_family_info(now_family)
         list_good_childs, list_bad_childs = now_family.create_new_childs()
+        self.now_family_num = now_family.family_num
         self.now_rank = now_family.rank
         self.output('list of good childs:')
         for child in list_good_childs:
@@ -98,12 +102,14 @@ class NeuroEvolution(object):
     def create_new_family(self):
         print('the num of good child list: ' + str(self.queue_new_child.qsize()))
         print('the num of family: ' + str(self.queue_family.qsize()))
+        print('----------Create new family----------')
         while (self.queue_new_child.qsize() >= 2):
             father = self.queue_new_child.get()
             mother = self.queue_new_child.get()
             self.family_num += 1
             new_family = family(self.family_num, father, mother, rank=self.now_rank + 1)
             self.queue_family.put(new_family)
+            new_family.out_info()
         if self.now_rank > 1:
             while (self.queue_bad_child.qsize() >= 2):
                 father = self.queue_bad_child.get()
@@ -111,9 +117,29 @@ class NeuroEvolution(object):
                 self.family_num += 1
                 new_family = family(self.family_num, father, mother, rank=self.now_rank - 1)
                 self.queue_family.put(new_family)
+                new_family.out_info()
+        print('-------------------------------------')
+
 
     def check_termination(self):
-        if self.family_num < self.max_gen:
+        if self.now_family_num < self.max_gen:
+            #self.cataclysm()
             return True
         else:
             return False
+
+    def cataclysm(self):
+        family_size = self.queue_family.qsize()
+        if family_size > self.max_gen:
+            kill_num = 0
+            new_queue_family = Queue()
+            for _ in range(family_size):
+                now_family = self.queue_family.get()
+                if now_family.rank != 1:
+                    new_queue_family.put(now_family)
+                kill_num+=1
+                if kill_num>family_size/2:
+                    break
+            while not self.queue_family.empty():
+                new_queue_family.put(self.queue_family.get())
+            self.queue_family=new_queue_family

@@ -2,3 +2,5 @@ population
 *.zip
 .idea/
 __pycache__/
+log.txt
+test.jpg
