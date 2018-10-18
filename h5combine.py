@@ -32,8 +32,8 @@ class combine(object):
         for layer in self.new_net.list_layers:
             if layer.name not in list_add_layers_name:
                 if layer in self.net_a.list_layers:
-                    net_a_file.copy(layer.name, new_net_file)
+                    net_a_file.copy('model_weights/' + layer.name, new_net_file)
                     list_add_layers_name.append(layer.name)
                 else:
-                    net_b_file.copy(layer.name, new_net_file)
+                    net_b_file.copy('model_weights/' + layer.name, new_net_file)
                     list_add_layers_name.append(layer.name)

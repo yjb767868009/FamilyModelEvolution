@@ -23,11 +23,11 @@ class family(object):
         self.lifetime = lifetime
 
     def out_info(self):
-        print('Family' + str(self.family_num) + ':' + 'Rank ' + str(
-            self.rank) + ' father ' + self.father.get_fnum_gen() + ',mother ' + self.mother.get_fnum_gen())
+        return 'Family' + str(self.family_num) + ':' + 'Rank ' + str(
+            self.rank) + ' father ' + self.father.get_fnum_gen() + ',mother ' + self.mother.get_fnum_gen()
 
     def life_time(self, cn):
-        return self.rank * 10 - cn
+        return self.rank * 20 - cn
         # return self.lifetime - cn
 
     def check_family_lifetime(self):
@@ -121,13 +121,13 @@ class family(object):
         self.list_bad_childs.clear()
         while (self.check_family_lifetime()):
             self.child_num += 1
-            new_child = self.cross_over()
+            new_child = self.cross_to_new_net_point()
             if randint(0, 1) == 1:
                 new_child = self.mutation_inter_layer(new_child)
             if randint(0, 1) == 1:
                 new_child = self.mutation_intra_layer(new_child)
             self.list_child.append(new_child)
-            new_child.father = new_child.ind_gen
+            new_child.father = new_child.get_fnum_gen()
             new_child.kick_simulation()
             if new_child.q_value > 0.1:
                 new_child.output_deploy_network()

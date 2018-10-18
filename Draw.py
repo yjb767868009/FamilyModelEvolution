@@ -8,7 +8,7 @@ num_score = 0
 with open('log.txt', 'r') as f:
     for line in f.readlines():
         score = float(line.strip().split('    ')[1])
-        if score > 0.2:
+        if score > 0.1:
             num_score += 1
             list_score.append(score)
 

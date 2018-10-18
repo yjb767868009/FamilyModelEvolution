@@ -82,6 +82,9 @@ class NeuroEvolution(object):
             print('have no family!!!!')
             return False
         now_family = self.queue_family.get()
+        f = open('family_log.txt', 'a')
+        f.write(now_family.out_info() + '\n')
+        f.close()
         self.output_family_info(now_family)
         list_good_childs, list_bad_childs = now_family.create_new_childs()
         self.now_family_num = now_family.family_num
@@ -109,7 +112,7 @@ class NeuroEvolution(object):
             self.family_num += 1
             new_family = family(self.family_num, father, mother, rank=self.now_rank + 1)
             self.queue_family.put(new_family)
-            new_family.out_info()
+            print(new_family.out_info())
         if self.now_rank > 1:
             while (self.queue_bad_child.qsize() >= 2):
                 father = self.queue_bad_child.get()
@@ -117,13 +120,12 @@ class NeuroEvolution(object):
                 self.family_num += 1
                 new_family = family(self.family_num, father, mother, rank=self.now_rank - 1)
                 self.queue_family.put(new_family)
-                new_family.out_info()
+                print(new_family.out_info())
         print('-------------------------------------')
-
 
     def check_termination(self):
         if self.now_family_num < self.max_gen:
-            #self.cataclysm()
+            # self.cataclysm()
             return True
         else:
             return False
@@ -137,9 +139,9 @@ class NeuroEvolution(object):
                 now_family = self.queue_family.get()
                 if now_family.rank != 1:
                     new_queue_family.put(now_family)
-                kill_num+=1
-                if kill_num>family_size/2:
+                kill_num += 1
+                if kill_num > family_size / 2:
                     break
             while not self.queue_family.empty():
                 new_queue_family.put(self.queue_family.get())
-            self.queue_family=new_queue_family
+            self.queue_family = new_queue_family
