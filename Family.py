@@ -24,7 +24,8 @@ class family(object):
 
     def out_info(self):
         return 'Family' + str(self.family_num) + ':' + 'Rank ' + str(
-            self.rank) + ' father ' + self.father.get_fnum_gen() + ',mother ' + self.mother.get_fnum_gen()
+            self.rank) + ' father ' + self.father.get_fnum_gen() + ',mother ' + self.mother.get_fnum_gen() + ',Q ' + max(
+            self.father.q_value, self.mother.q_value)
 
     def life_time(self, cn):
         return self.rank * 20 - cn
@@ -147,3 +148,8 @@ class family(object):
             else:
                 self.child_num -= 1
         return self.list_good_childs, self.list_bad_childs
+
+    def out_log(self):
+        f = open('family_log.txt', 'a')
+        f.write(self.out_info() + '\n')
+        f.close()

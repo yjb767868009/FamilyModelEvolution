@@ -1,6 +1,7 @@
 population
 *.zip
-.idea/
+.idea
 __pycache__/
 log.txt
 test.jpg
+family_log.txt

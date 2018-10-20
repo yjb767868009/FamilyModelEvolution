@@ -221,6 +221,7 @@ class NeuralNet(object):
             if self.q_value != 0:
                 f = open('log.txt', 'a')
                 f.write(datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z') + '    ')
+                f.write(self.get_fnum_gen() + '   ')
                 f.write(str(self.q_value) + '\n')
                 f.close()
                 trained = True

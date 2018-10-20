@@ -12,6 +12,7 @@ def main():
     global args
     args = parser.parse_args()
     os.system('rm -r population/*')
+    os.system('rm family_log.txt')
     os.system('rm log.txt')
     neuro_evo = ne.NeuroEvolution(population_size=args.population_size, max_gen=args.max_gen)
     neuro_evo.create_base_family(father='base1',mother='base2')

@@ -34,9 +34,9 @@ from random import randint, sample, uniform, random
 
 
 class NeuroEvolution(object):
-    queue_new_child = Queue()
-    queue_bad_child = Queue()
-    queue_family = Queue()
+    list_new_child = []
+    list_bad_child = []
+    list_family = []
     list_q = []
     family_num = 0
     now_family_num = 0
@@ -52,13 +52,23 @@ class NeuroEvolution(object):
         seed_mother = self.create_seed_net(1, load_network=mother)
         seed_family = family(self.family_num, seed_father, seed_mother, rank=1)
         seed_family.child_num = 1
-        self.queue_family.put(seed_family)
+        self.list_family.append(seed_family)
 
     def create_seed_net(self, num, net_name=None, load_network=None):
         seed_net = nn.NeuralNet(0, num, net_name=net_name, load_network=load_network, create_seed=True, is_seed=True)
         seed_net.kick_simulation()
         seed_net.output_deploy_network()
         return seed_net
+
+    def out_list_family_info(self):
+        print('the num of family: ' + str(len(self.list_family)))
+        for now_family in self.list_family:
+            print(now_family.out_info())
+
+    def out_list_new_child_info(self):
+        print('the num of good child list: ' + str(len(self.list_new_child)))
+        for child in self.list_new_child:
+            child.get_fnum_gen()
 
     def output(self, message):
         print(message)
@@ -76,72 +86,52 @@ class NeuroEvolution(object):
         self.output(family_r)
 
     def run_family(self):
-        print('the num of good child list: ' + str(self.queue_new_child.qsize()))
-        print('the num of family: ' + str(self.queue_family.qsize()))
-        if self.queue_family.empty():
+        # self.out_list_family_info()
+        if len(self.list_family) == 0:
             print('have no family!!!!')
             return False
-        now_family = self.queue_family.get()
-        f = open('family_log.txt', 'a')
-        f.write(now_family.out_info() + '\n')
-        f.close()
+        now_family = self.list_family.pop()
+        now_family.out_log()
         self.output_family_info(now_family)
-        list_good_childs, list_bad_childs = now_family.create_new_childs()
+        good_childs, bad_childs = now_family.create_new_childs()
         self.now_family_num = now_family.family_num
         self.now_rank = now_family.rank
         self.output('list of good childs:')
-        for child in list_good_childs:
+        for child in good_childs:
             child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
             self.output(child_gen_q)
-            self.queue_new_child.put(child)
+            self.list_new_child.append(child)
         if self.now_rank >= 1:
             self.output('list of bad childs:')
-            for child in list_bad_childs:
+            for child in bad_childs:
                 child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
                 self.output(child_gen_q)
-                self.queue_bad_child.put(child)
+                self.list_bad_child.append(child)
         return True
 
     def create_new_family(self):
-        print('the num of good child list: ' + str(self.queue_new_child.qsize()))
-        print('the num of family: ' + str(self.queue_family.qsize()))
+        # self.out_list_new_child_info()
+        self.out_list_family_info()
         print('----------Create new family----------')
-        while (self.queue_new_child.qsize() >= 2):
-            father = self.queue_new_child.get()
-            mother = self.queue_new_child.get()
+        while (len(self.list_new_child) >= 2):
+            father = self.list_new_child.pop()
+            mother = self.list_new_child.pop()
             self.family_num += 1
             new_family = family(self.family_num, father, mother, rank=self.now_rank + 1)
-            self.queue_family.put(new_family)
+            self.list_family.append(new_family)
             print(new_family.out_info())
-        if self.now_rank > 1:
-            while (self.queue_bad_child.qsize() >= 2):
-                father = self.queue_bad_child.get()
-                mother = self.queue_bad_child.get()
+        if len(self.list_family) == 0:
+            while len(self.list_bad_child) >= 2:
+                father = self.list_bad_child.pop()
+                mother = self.list_bad_child.pop()
                 self.family_num += 1
                 new_family = family(self.family_num, father, mother, rank=self.now_rank - 1)
-                self.queue_family.put(new_family)
+                self.list_family.append(new_family)
                 print(new_family.out_info())
         print('-------------------------------------')
 
     def check_termination(self):
         if self.now_family_num < self.max_gen:
-            # self.cataclysm()
             return True
         else:
             return False
-
-    def cataclysm(self):
-        family_size = self.queue_family.qsize()
-        if family_size > self.max_gen:
-            kill_num = 0
-            new_queue_family = Queue()
-            for _ in range(family_size):
-                now_family = self.queue_family.get()
-                if now_family.rank != 1:
-                    new_queue_family.put(now_family)
-                kill_num += 1
-                if kill_num > family_size / 2:
-                    break
-            while not self.queue_family.empty():
-                new_queue_family.put(self.queue_family.get())
-            self.queue_family = new_queue_family

@@ -1,0 +1,92 @@
+layer {
+  type:Convolution
+  name:0_1_convolution_1
+  bottom:data
+  top:0_1_convolution_1
+  num_output:32
+  kernel_w:4
+  stride:1
+  padding:valid
+  use_bias:True
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_1_activation_2
+  bottom:0_1_convolution_1
+  top:0_1_activation_2
+  active_type:relu
+  concatenate:None
+}
+
+
+layer {
+  type:Convolution
+  name:0_1_convolution_3
+  bottom:0_1_activation_2
+  top:0_1_convolution_3
+  num_output:32
+  kernel_w:4
+  stride:2
+  padding:valid
+  use_bias:True
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_1_activation_4
+  bottom:0_1_convolution_3
+  top:0_1_activation_4
+  active_type:relu
+  concatenate:None
+}
+
+
+layer {
+  type:Convolution
+  name:0_1_convolution_5
+  bottom:0_1_activation_4
+  top:0_1_convolution_5
+  num_output:32
+  kernel_w:4
+  stride:2
+  padding:valid
+  use_bias:True
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_1_activation_6
+  bottom:0_1_convolution_5
+  top:0_1_activation_6
+  active_type:relu
+  concatenate:None
+}
+
+
+layer {
+  type:InnerProduct
+  name:0_1_innerproduct_7
+  bottom:0_1_activation_6
+  top:0_1_innerproduct_7
+  num_output:64
+  concatenate:None
+}
+
+
+layer {
+  type:Activation
+  name:0_1_activation_8
+  bottom:0_1_innerproduct_7
+  top:0_1_activation_8
+  active_type:relu
+  concatenate:None
+}
+
+
