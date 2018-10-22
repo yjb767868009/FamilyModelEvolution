@@ -1,8 +1,5 @@
-import os
-import numpy as np
+from random import randint
 import neuralnet as nn
-import Layers
-from random import randint, sample, uniform, random
 from h5combine import combine
 
 test = False

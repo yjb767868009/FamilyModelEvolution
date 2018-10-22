@@ -28,7 +28,6 @@ Methods:
 """
 import os
 import neuralnet as nn
-from queue import Queue
 from Family import family
 from random import randint, sample, uniform, random
 

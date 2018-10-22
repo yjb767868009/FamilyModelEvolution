@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 
 list_score = []
 num_score = 0
@@ -15,9 +14,8 @@ with open('log.txt', 'r') as f:
 x = np.linspace(1, num_score, num_score)
 plt.figure()
 plt.plot(x, list_score)
-plt.xlim((1,num_score))
+plt.xlim((1, num_score))
 plt.xlabel('Generation')
 plt.ylabel('Accuracy')
 plt.savefig('./test.jpg')
 plt.show()
-
