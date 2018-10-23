@@ -90,7 +90,7 @@ class NeuroEvolution(object):
             print('have no family!!!!')
             return False
         now_family = self.list_family.pop()
-        now_family.out_log()
+        # now_family.out_log()
         self.output_family_info(now_family)
         good_childs, bad_childs = now_family.create_new_childs()
         self.now_family_num = now_family.family_num
@@ -118,6 +118,7 @@ class NeuroEvolution(object):
             self.family_num += 1
             new_family = family(self.family_num, father, mother, rank=self.now_rank + 1)
             self.list_family.append(new_family)
+            new_family.out_log()
             print(new_family.out_info())
         if len(self.list_family) == 0:
             while len(self.list_bad_child) >= 2:
@@ -126,6 +127,7 @@ class NeuroEvolution(object):
                 self.family_num += 1
                 new_family = family(self.family_num, father, mother, rank=self.now_rank - 1)
                 self.list_family.append(new_family)
+                new_family.out_log()
                 print(new_family.out_info())
         print('-------------------------------------')
 
