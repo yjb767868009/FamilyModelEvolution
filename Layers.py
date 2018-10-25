@@ -96,7 +96,7 @@ class ConvLayer(Layer):
     """
     layer_type = 'convolution'
     layer_probablity = np.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    attr_options_dict = {"num_output": [16, 32, 64, 128, 256, 512],
+    attr_options_dict = {"num_output": [16, 32, 64, 128, 256],
                          "kernel_width": [4, 6, 8, 10, 12, 14, 16],
                          "stride": [1, 2, 4]}
 
@@ -150,7 +150,7 @@ class InnerLayer(Layer):
     """
     layer_type = 'innerproduct'
     layer_probablity = np.array([0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    attr_options_dict = {"num_output": [16, 32, 64, 128, 256, 512]}
+    attr_options_dict = {"num_output": [16, 32, 64, 128, 256]}
 
     def __init__(self, num_output_in=None, name_in=None, concatenate=None):
         if num_output_in == None:

@@ -125,7 +125,7 @@ class NeuroEvolution(object):
                 father = self.list_bad_child.pop()
                 mother = self.list_bad_child.pop()
                 self.family_num += 1
-                new_family = family(self.family_num, father, mother, rank=self.now_rank - 1)
+                new_family = family(self.family_num, father, mother, rank=max(self.now_rank - 1, 1))
                 self.list_family.append(new_family)
                 new_family.out_log()
                 print(new_family.out_info())
