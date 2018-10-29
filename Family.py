@@ -109,7 +109,7 @@ class family(object):
             print('net ' + net.get_fnum_gen() + ' intra mutation')
         mutated_net = nn.NeuralNet(self.family_num, self.child_num)
         mutated_net.set_list_layers(net.get_list_layers(), net.layer_num)
-        diff = randint(int(len(net.list_layers) / 5), int(len(net.list_layers) / 2))
+        diff = randint(int(len(net.list_layers) / 5), int(len(net.list_layers)))
         for _ in range(diff):
             mutated_net.adjust_layer_attr_random()
         return mutated_net

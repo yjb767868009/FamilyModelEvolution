@@ -25,7 +25,7 @@ test = False
 
 
 class NeuralNet(object):
-    dynamic_layers = [ConvLayer, InnerLayer, PoolLayer]
+    dynamic_layers = [ConvLayer, InnerLayer, PoolLayer, ActivationLayer, BatchNormalizationLayer, ZeroPaddingLayer]
 
     def __init__(self, family_num_in, ind_gen_in, is_seed=False, net_name=None, load_network=None,
                  create_seed=False):
