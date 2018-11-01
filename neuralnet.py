@@ -52,6 +52,9 @@ class NeuralNet(object):
         except:
             pass
 
+    def rank(self):
+        return int(self.q_value*10)+1
+
     def set_father(self, father):
         self.father = father
 
@@ -220,7 +223,7 @@ class NeuralNet(object):
             print("net " + self.get_fnum_gen() + " : " + str(self.q_value))
             if self.q_value != 0:
                 f = open('log.txt', 'a')
-                f.write(datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z') + '    ')
+                f.write(datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z') + '   ')
                 f.write(self.get_fnum_gen() + '   ')
                 f.write(str(self.q_value) + '\n')
                 f.close()

@@ -11,21 +11,21 @@ class family(object):
     list_good_childs = []
     list_bad_childs = []
 
-    def __init__(self, family_num_in, father, mother, rank=1, lifetime=20):
+    def __init__(self, family_num_in, father, mother, lifetime=20):
         self.father = father
         self.mother = mother
-        self.rank = rank
+        self.rank = int((father.rank() + mother.rank()) / 2)
         self.Q = max(father.q_value, mother.q_value)
         self.family_num = family_num_in
         self.lifetime = lifetime
 
     def out_info(self):
-        return 'Family' + str(self.family_num) + ':' + 'Rank ' + str(
-            self.rank) + ' father ' + self.father.get_fnum_gen() + ',mother ' + self.mother.get_fnum_gen() + ',Q ' + max(
-            self.father.q_value, self.mother.q_value)
+        return 'Family' + str(self.family_num) + ':' + 'Rank ' + str(self.rank) + \
+               ' father ' + self.father.get_fnum_gen() + ',mother ' + self.mother.get_fnum_gen() + \
+               ',Q ' + str(max(float(self.father.q_value), float(self.mother.q_value)))
 
     def life_time(self, cn):
-        return self.rank * 20 - cn
+        return 10 - cn
         # return self.lifetime - cn
 
     def check_family_lifetime(self):
