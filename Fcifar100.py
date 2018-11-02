@@ -29,7 +29,7 @@ class Fitness(object):
         self.classes = 100
         self.epochs = 100
         self.workers = 16
-        self.batch_size = 32
+        self.batch_size = 8
         self.learning_rate = 1e-4
         self.lr_wait = 10
         self.decay = 1e-4

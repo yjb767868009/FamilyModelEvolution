@@ -95,15 +95,15 @@ class NeuroEvolution(object):
             good_children, bad_children = now_family.create_new_childs()
             self.now_family_num = now_family.family_num
             self.now_rank = now_family.rank
-            if len(good_children) == 0:
-                print('list of bad children:')
-                for child in bad_children:
+            if len(good_children) >=2:
+                print('list of good children:')
+                for child in good_children:
                     child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
                     print(child_gen_q)
                     self.list_new_child.append(child)
             else:
-                print('list of good children:')
-                for child in good_children:
+                print('list of bad children:')
+                for child in bad_children:
                     child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
                     print(child_gen_q)
                     self.list_new_child.append(child)
