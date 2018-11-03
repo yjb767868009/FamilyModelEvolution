@@ -8,14 +8,14 @@ test = False
 class family(object):
     child_num = 0
     list_child = []
-    list_good_childs = []
-    list_bad_childs = []
+    list_good_children = []
+    list_bad_children = []
 
     def __init__(self, family_num_in, father, mother, lifetime=20):
         self.father = father
         self.mother = mother
-        self.rank = int((father.rank() + mother.rank()) / 2)
         self.Q = max(father.q_value, mother.q_value)
+        self.rank = int(self.Q * 10) + 1
         self.family_num = family_num_in
         self.lifetime = lifetime
 
@@ -43,7 +43,7 @@ class family(object):
         # return True if a is selected, False if b
         diff_a = layer - layer_a
         diff_b = layer - layer_b
-        if (sum(diff_a ** 2) <= sum(diff_b ** 2)):
+        if sum(diff_a ** 2) <= sum(diff_b ** 2):
             return True
         else:
             return False
@@ -115,9 +115,9 @@ class family(object):
         return mutated_net
 
     def create_new_childs(self):
-        self.list_good_childs.clear()
-        self.list_bad_childs.clear()
-        while (self.check_family_lifetime()):
+        self.list_good_children.clear()
+        self.list_bad_children.clear()
+        while self.check_family_lifetime():
             self.child_num += 1
             new_child = self.cross_to_new_net_point()
             if randint(0, 1) == 1:
@@ -131,20 +131,20 @@ class family(object):
                 new_child.output_deploy_network()
                 if new_child.q_value > self.Q:
                     print('net ' + new_child.get_fnum_gen() + ' better than ' + str(self.Q))
-                    self.list_good_childs.append(new_child)
+                    self.list_good_children.append(new_child)
                 else:
                     if self.rank > 1:
                         print('net ' + new_child.get_fnum_gen() + ' worse than ' + str(self.Q))
-                        if len(self.list_bad_childs) > 2:
-                            if new_child.q_value > self.list_bad_childs[0].q_value:
-                                self.list_bad_childs[0] = new_child
-                            elif new_child.q_value > self.list_bad_childs[1].q_value:
-                                self.list_bad_childs[1] = new_child
+                        if len(self.list_bad_children) > 2:
+                            if new_child.q_value > self.list_bad_children[0].q_value:
+                                self.list_bad_children[0] = new_child
+                            elif new_child.q_value > self.list_bad_children[1].q_value:
+                                self.list_bad_children[1] = new_child
                         else:
-                            self.list_bad_childs.append(new_child)
+                            self.list_bad_children.append(new_child)
             else:
                 self.child_num -= 1
-        return self.list_good_childs, self.list_bad_childs
+        return self.list_good_children, self.list_bad_children
 
     def out_log(self):
         f = open('family_log.txt', 'a')

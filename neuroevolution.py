@@ -29,7 +29,7 @@ Methods:
 import os
 import neuralnet as nn
 from Family import family
-from random import randint, sample, uniform, random
+from random import randint, sample, uniform, random, shuffle
 
 
 class NeuroEvolution(object):
@@ -87,7 +87,8 @@ class NeuroEvolution(object):
 
     def run_family(self):
         self.list_new_child.clear()
-        if len(self.list_now_family)==0:
+        self.list_q.clear()
+        if len(self.list_now_family) == 0:
             return False
         while len(self.list_now_family) > 0:
             now_family = self.list_now_family.pop()
@@ -95,21 +96,24 @@ class NeuroEvolution(object):
             good_children, bad_children = now_family.create_new_childs()
             self.now_family_num = now_family.family_num
             self.now_rank = now_family.rank
-            if len(good_children) >=2:
+            if len(good_children) >= 2:
                 print('list of good children:')
                 for child in good_children:
                     child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
                     print(child_gen_q)
                     self.list_new_child.append(child)
+                    self.list_q.append(child.q_value)
             else:
                 print('list of bad children:')
                 for child in bad_children:
                     child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
                     print(child_gen_q)
                     self.list_new_child.append(child)
+                    self.list_q.append(child.q_value)
         return True
 
     def create_new_family(self):
+        self.list_new_child = shuffle(self.list_new_child)
         print('---------------Create new family---------------')
         while len(self.list_new_child) >= 2:
             father = self.list_new_child.pop()
