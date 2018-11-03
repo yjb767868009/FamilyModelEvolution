@@ -69,11 +69,13 @@ class NeuroEvolution(object):
             print(now_family.out_info())
 
     def out_list_new_child_info(self):
+        # output new children's information
         print('the num of good child list: ' + str(len(self.list_new_child)))
         for child in self.list_new_child:
             child.get_fnum_gen()
 
     def output_family_info(self, family):
+        # output this family information
         print('--------------------Family' + str(family.family_num) + '--------------------')
         family_h = 'Family ' + str(family.family_num)
         family_f = family_h + ' father : net ' + family.father.get_fnum_gen()
@@ -86,16 +88,22 @@ class NeuroEvolution(object):
         print(family_r)
 
     def run_family(self):
+        # clear old list
         self.list_new_child.clear()
         self.list_q.clear()
+        # if race is extinct then evolution over
         if len(self.list_now_family) == 0:
             return False
         while len(self.list_now_family) > 0:
+            # get one family from family list
             now_family = self.list_now_family.pop()
             self.output_family_info(now_family)
-            good_children, bad_children = now_family.create_new_childs()
             self.now_family_num = now_family.family_num
             self.now_rank = now_family.rank
+            # now family get new generation
+            good_children, bad_children = now_family.create_new_childs()
+            # if have enough good children,put them in children list
+            # else put best two bad children in children list
             if len(good_children) >= 2:
                 print('list of good children:')
                 for child in good_children:
@@ -113,6 +121,7 @@ class NeuroEvolution(object):
         return True
 
     def create_new_family(self):
+        # put this generation's all children form a family
         self.list_new_child = shuffle(self.list_new_child)
         print('---------------Create new family---------------')
         while len(self.list_new_child) >= 2:
@@ -127,6 +136,7 @@ class NeuroEvolution(object):
         self.list_now_family = self.list_next_family
 
     def check_termination(self):
+        # if family num is enough then over
         if self.now_family_num < self.max_gen:
             return True
         else:
