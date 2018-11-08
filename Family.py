@@ -58,7 +58,7 @@ class family(object):
     def cross_over(self):
         depth_a = self.father.get_network_depth()
         depth_b = self.mother.get_network_depth()
-        if (depth_a > depth_b):
+        if depth_a > depth_b:
             warp_length = depth_a
         else:
             warp_length = depth_b
@@ -109,7 +109,7 @@ class family(object):
             print('net ' + net.get_fnum_gen() + ' intra mutation')
         mutated_net = nn.NeuralNet(self.family_num, self.child_num)
         mutated_net.set_list_layers(net.get_list_layers(), net.layer_num)
-        diff = randint(0, int(len(net.list_layers)))
+        diff = randint(1, int(len(net.list_layers)))
         for _ in range(diff):
             mutated_net.adjust_layer_attr_random()
         return mutated_net
@@ -120,8 +120,10 @@ class family(object):
         while self.check_family_lifetime():
             self.child_num += 1
             new_child = self.cross_to_new_net_point()
-            new_child = self.mutation_inter_layer(new_child)
-            new_child = self.mutation_intra_layer(new_child)
+            if randint(0,1)==1:
+                new_child = self.mutation_inter_layer(new_child)
+            if randint(0, 1) == 1:
+                new_child = self.mutation_intra_layer(new_child)
             self.list_child.append(new_child)
             new_child.father = new_child.get_fnum_gen()
             new_child.kick_simulation()
