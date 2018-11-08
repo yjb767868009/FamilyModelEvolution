@@ -39,7 +39,7 @@ class NeuralNet(object):
 
         self.family_num = family_num_in
         self.ind_gen = ind_gen_in
-        if load_network != None:
+        if load_network is not None:
             self.load_network(load_network, create_seed=create_seed)
         elif ind_gen_in == 0 or is_seed:
             self.create_seed_net(net_name)
@@ -53,7 +53,7 @@ class NeuralNet(object):
             pass
 
     def rank(self):
-        return int(self.q_value*10)+1
+        return int(self.q_value * 10) + 1
 
     def set_father(self, father):
         self.father = father
@@ -163,15 +163,13 @@ class NeuralNet(object):
         del self.list_layers[layer_index]
 
     def adjust_layer_list_random(self):
-        diff_num_layers = 0
-        while diff_num_layers == 0:
-            diff_num_layers = randint(-int(len(self.list_layers) / 5), int(len(self.list_layers)))
-        if (diff_num_layers > 0):
-            while (diff_num_layers != 0):
+        diff_num_layers = randint(-int(len(self.list_layers) / 5), int(len(self.list_layers)))
+        if diff_num_layers > 0:
+            while diff_num_layers != 0:
                 self.insert_layer_random_position()
                 diff_num_layers = diff_num_layers - 1
         else:
-            while (diff_num_layers != 0):
+            while diff_num_layers != 0:
                 self.delete_layer_random_position()
                 diff_num_layers = diff_num_layers + 1
 

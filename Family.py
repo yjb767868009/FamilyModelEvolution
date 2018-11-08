@@ -109,7 +109,7 @@ class family(object):
             print('net ' + net.get_fnum_gen() + ' intra mutation')
         mutated_net = nn.NeuralNet(self.family_num, self.child_num)
         mutated_net.set_list_layers(net.get_list_layers(), net.layer_num)
-        diff = randint(int(len(net.list_layers) / 5), int(len(net.list_layers)))
+        diff = randint(0, int(len(net.list_layers)))
         for _ in range(diff):
             mutated_net.adjust_layer_attr_random()
         return mutated_net
@@ -120,10 +120,8 @@ class family(object):
         while self.check_family_lifetime():
             self.child_num += 1
             new_child = self.cross_to_new_net_point()
-            if randint(0, 1) == 1:
-                new_child = self.mutation_inter_layer(new_child)
-            if randint(0, 1) == 1:
-                new_child = self.mutation_intra_layer(new_child)
+            new_child = self.mutation_inter_layer(new_child)
+            new_child = self.mutation_intra_layer(new_child)
             self.list_child.append(new_child)
             new_child.father = new_child.get_fnum_gen()
             new_child.kick_simulation()
@@ -144,7 +142,8 @@ class family(object):
                             self.list_bad_children.append(new_child)
             else:
                 self.child_num -= 1
-        return self.list_good_children, self.list_bad_children
+        list_children = self.list_good_children + self.list_bad_children
+        return list_children[:max(len(self.list_good_children), 2)]
 
     def out_log(self):
         f = open('family_log.txt', 'a')

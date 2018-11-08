@@ -27,6 +27,7 @@ Methods:
 
 """
 import os
+import numpy as np
 import neuralnet as nn
 from Family import family
 from random import randint, sample, uniform, random, shuffle
@@ -42,10 +43,11 @@ class NeuroEvolution(object):
     now_rank = 0
     max_rank = 0
 
-    def __init__(self, population_size=10, max_gen=10):
+    def __init__(self, population_size=10, max_gen=10,num_elites = 10):
         self.train_model_num = 0
         self.population_size = population_size
         self.max_gen = max_gen
+        self.num_elites = num_elites
 
     def create_base_family(self, father=None, mother=None):
         # create seed family using seed father and seed mother
@@ -101,32 +103,21 @@ class NeuroEvolution(object):
             self.now_family_num = now_family.family_num
             self.now_rank = now_family.rank
             # now family get new generation
-            good_children, bad_children = now_family.create_new_childs()
-            # if have enough good children,put them in children list
-            # else put best two bad children in children list
-            if len(good_children) >= 2:
-                print('list of good children:')
-                for child in good_children:
-                    child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
-                    print(child_gen_q)
-                    self.list_new_child.append(child)
-                    self.list_q.append(child.q_value)
-            else:
-                print('list of bad children:')
-                for child in bad_children:
-                    child_gen_q = child.get_fnum_gen() + ':' + str(child.q_value)
-                    print(child_gen_q)
-                    self.list_new_child.append(child)
-                    self.list_q.append(child.q_value)
+            list_children = now_family.create_new_childs()
+            for child in list_children:
+                self.list_new_child.append(child)
+                self.list_q.append(child.q_value)
         return True
 
     def create_new_family(self):
         # put this generation's all children form a family
-        self.list_new_child = shuffle(self.list_new_child)
+        elites_indices = np.argsort(self.list_q)[::-1][:self.num_elites]
+        list_elites = [self.list_new_child[index] for index in elites_indices]
+        self.list_next_family.clear()
         print('---------------Create new family---------------')
-        while len(self.list_new_child) >= 2:
-            father = self.list_new_child.pop()
-            mother = self.list_new_child.pop()
+        while len(list_elites) >= 2:
+            father = list_elites.pop()
+            mother = list_elites.pop()
             self.family_num += 1
             new_family = family(self.family_num, father, mother)
             self.list_next_family.append(new_family)
