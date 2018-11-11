@@ -105,7 +105,7 @@ class NeuralNet(object):
             self.append_layer(BatchNormalizationLayer())
             self.append_layer(ActivationLayer('relu'))
             self.append_layer(ZeroPaddingLayer(1))
-            self.append_layer(PoolLayer(3, 2, type_in='max', concatenate=True))
+            self.append_layer(PoolLayer(3, 2, pool_type_in='max', concatenate=True))
             self.dense_block(6)
             self.transition_block(128)
             self.dense_block(12)

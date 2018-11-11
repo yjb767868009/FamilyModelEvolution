@@ -30,7 +30,7 @@ class Fitness(object):
         self.epochs = 100
         self.workers = 16
         self.batch_size = 8
-        self.learning_rate = 1e-4
+        self.learning_rate = 1e-3
         self.lr_wait = 10
         self.decay = 1e-4
         self.momentum = 0.9
@@ -56,7 +56,7 @@ class Fitness(object):
             x = input
             x1 = x
             for layer in self.list_layers:
-                if layer.layer_type == 'Concatenate':
+                if layer.layer_type == 'concatenate':
                     x = layer.get_layer()([x, x1])
                 else:
                     x = layer.get_layer()(x)
@@ -75,7 +75,7 @@ class Fitness(object):
             file_path = 'seed/densenet169.hdf5'
             self.model.load_weights(file_path, by_name=True, skip_mismatch=True, reshape=True)
             print('load net ' + str(self.father) + ' weights')
-        elif self.father != None:
+        elif self.father is not None:
             file_path = 'population/' + str(self.father) + '/weights.hdf5'
             self.model.load_weights(file_path, by_name=True, skip_mismatch=True, reshape=True)
             print('load net ' + str(self.father) + ' weights')
@@ -113,7 +113,7 @@ class Fitness(object):
         early_stop = EarlyStopping(monitor='val_loss', patience=self.early_stop, mode='auto')
         tensorboard = TensorBoard(log_dir=self.folder_name)
         reduce_lr = ReduceLROnPlateau(factor=0.03, cooldown=0, patience=self.lr_wait, min_lr=0.1e-6)
-        callbacks = [early_stop, reduce_lr, checkpoint]
+        callbacks = [early_stop, checkpoint]
 
         self.model.compile(
             # optimizer=Adam(lr=self.learning_rate, decay=self.decay),

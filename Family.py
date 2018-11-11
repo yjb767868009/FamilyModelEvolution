@@ -120,7 +120,7 @@ class family(object):
         while self.check_family_lifetime():
             self.child_num += 1
             new_child = self.cross_to_new_net_point()
-            if randint(0,1)==1:
+            if randint(0, 1) == 1:
                 new_child = self.mutation_inter_layer(new_child)
             if randint(0, 1) == 1:
                 new_child = self.mutation_intra_layer(new_child)

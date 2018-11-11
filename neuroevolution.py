@@ -51,8 +51,8 @@ class NeuroEvolution(object):
 
     def create_base_family(self, father=None, mother=None):
         # create seed family using seed father and seed mother
-        seed_father = self.create_seed_net(0, load_network=father)
-        seed_mother = self.create_seed_net(1, load_network=mother)
+        seed_father = self.create_seed_net(0, net_name=father)
+        seed_mother = self.create_seed_net(1, net_name=mother)
         seed_family = family(self.family_num, seed_father, seed_mother)
         seed_family.child_num = 1
         self.list_now_family.append(seed_family)
