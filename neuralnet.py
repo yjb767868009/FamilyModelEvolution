@@ -166,9 +166,7 @@ class NeuralNet(object):
         del self.list_layers[layer_index]
 
     def adjust_layer_list_random(self):
-        diff_num_layers = 0
-        while diff_num_layers == 0:
-            diff_num_layers = randint(-int(len(self.list_layers) / 5), int(len(self.list_layers)))
+        diff_num_layers = randint(-int(len(self.list_layers) / 5), int(len(self.list_layers)/2))
         if diff_num_layers > 0:
             while diff_num_layers != 0:
                 self.insert_layer_random_position()
