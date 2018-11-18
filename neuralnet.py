@@ -25,7 +25,7 @@ test = False
 
 
 class NeuralNet(object):
-    dynamic_layers = [ConvLayer, InnerLayer, PoolLayer, ActivationLayer, BatchNormalizationLayer, ZeroPaddingLayer]
+    dynamic_layers = [ConvLayer, PoolLayer, ActivationLayer, BatchNormalizationLayer, ZeroPaddingLayer]
 
     def __init__(self, family_num_in, ind_gen_in, is_seed=False, net_name=None, load_network=None,
                  create_seed=False):
@@ -90,6 +90,9 @@ class NeuralNet(object):
     def create_seed_net(self, net_name=None):
         if net_name == None:
             self.list_layers = []
+            self.append_layer(ConvLayer(32,4,1))
+        elif net_name == 'base':
+            self.list_layers = []
             self.append_layer(ConvLayer(32, 4, 1))
             self.append_layer(ActivationLayer('relu'))
             self.append_layer(ConvLayer(32, 4, 2))
@@ -152,7 +155,7 @@ class NeuralNet(object):
         return self.list_layers[pose]
 
     def insert_layer(self, layer, layer_index):
-        if (layer_index >= len(self.list_layers)):
+        if (layer_index > len(self.list_layers)):
             raise "the inserted position is beyond the current depth of the network"
         self.list_layers.insert(layer_index, layer)
 
@@ -177,7 +180,7 @@ class NeuralNet(object):
 
     def insert_layer_random_position(self):
         layer = self.generate_random_layer()
-        layer_index = randint(0, len(self.list_layers) - 1)
+        layer_index = randint(0, len(self.list_layers))
         self.layer_num = self.layer_num + 1
         layer.set_name(self.get_fnum_gen(), self.layer_num)
         self.insert_layer(layer, layer_index)
@@ -221,7 +224,7 @@ class NeuralNet(object):
                 del f
                 gc.collect()
             print("net " + self.get_fnum_gen() + " : " + str(self.q_value))
-            if self.q_value != 0:
+            if self.q_value >= 0.1:
                 f = open('log.txt', 'a')
                 f.write(datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z') + '   ')
                 f.write(self.get_fnum_gen() + '   ')

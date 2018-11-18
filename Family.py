@@ -87,7 +87,7 @@ class family(object):
     def cross_to_new_net_point(self):
         if not test:
             print('net ' + self.father.get_fnum_gen() + ' and net ' + self.mother.get_fnum_gen() + ' cross new net')
-        cross_point = randint(1, self.father.get_network_depth() - 1)
+        cross_point = randint(0, self.father.get_network_depth())
         new_layer_list = self.father.list_layers[:cross_point] + self.mother.list_layers[cross_point:]
         new_net = nn.NeuralNet(self.family_num, self.child_num)
         new_net.set_list_layers(new_layer_list, max(self.father.layer_num, self.mother.layer_num))

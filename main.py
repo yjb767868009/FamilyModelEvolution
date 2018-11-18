@@ -16,8 +16,8 @@ def main():
     os.system('rm log.txt')
     neuro_evo = ne.NeuroEvolution(population_size=args.population_size,
                                   max_gen=args.max_gen,
-                                  num_elites=10)
-    neuro_evo.create_base_family(father='DN169', mother='DN169')
+                                  num_elites=4)
+    neuro_evo.create_base_family(father=None, mother=None)
     while neuro_evo.check_termination():
         if not neuro_evo.run_family():
             break
